@@ -1,0 +1,96 @@
+#include <iostream>
+#include <fstream>
+#include <time.h>
+#include <string>
+
+using namespace std;
+
+typedef struct Liste 
+{
+	int cl;
+	string vlera;
+	struct Liste *pas;
+}Liste;
+int ndodhet (Liste *head, string c)
+{
+	Liste *tmp = head; int shuma = 0;
+	while (tmp!=NULL)
+	{    if (tmp->vlera==c)
+		{  return -1;
+		}
+		shuma++;
+		tmp=tmp->pas;
+	}
+ return shuma;
+}
+void shto (Liste *head,string c)
+{       Liste * temp = head;
+	int f=ndodhet(head,c);
+	if (f!=-1)
+	{       Liste * temp = head;
+		for (int i=1; i<f; i++)
+		{ temp = temp->pas;
+		}
+		Liste *temp1 = new Liste;
+		temp1->cl=f;
+		temp1->vlera=c;
+		temp->pas=temp1;
+		temp1->pas=NULL;
+	}
+}
+
+void shfaq (Liste *head)
+{	Liste *temp = head;
+	while (temp!=NULL)
+	{   cout<<temp->cl<<" "<<temp->vlera<<endl;
+	    temp=temp->pas;
+	}
+}
+char LowerCap(char l) 
+{
+  int str = (int)l;
+  if (str>=65 && str<=90)
+  	 str+=32;
+  return (char) str;
+}
+
+string LowerCap1 (string c)
+{	string f = "";
+	for (int i=0; i<c.length();i++)
+	{
+		f+=LowerCap(c.at(i)); 
+	}
+	return f;
+}
+void ListFjalor ()
+{	Liste *fjalor = new Liste;
+	fjalor->cl=0;
+	fjalor->vlera="FJALOR";
+	fjalor->pas=NULL;
+	ifstream in;
+	in.open("CFile.txt");
+	if (!in)
+	{ cout<<"File nuk u gjet "<<endl;
+		return ;
+	}
+	else{
+		while (!in.eof()){
+			string c;
+			in>>c;
+			shto(fjalor,LowerCap1(c));
+		}
+	}
+	in.close();	
+	shfaq(fjalor);	
+}
+int main (){
+    clock_t k,k1 ;
+    double koha;	
+    k = clock();
+    ListFjalor();		
+    k1 = clock();
+    koha= ((double) (k1 - k)) / CLOCKS_PER_SEC;
+    cout<<endl;
+    cout<<"Koha eshte : "<<koha*1000<<" milisekonda"<<endl;
+	return 0;
+}

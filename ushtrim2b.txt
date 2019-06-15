@@ -1,0 +1,15 @@
+package ushtrim2DetyreKursi;
+
+import java.util.Scanner;
+
+public class WebCrawlerMain extends WebCrawler {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+WebCrawler web=new WebCrawler();
+Scanner input=new Scanner(System.in);
+System.out.print("Jep nje URL:");
+String url=input.nextLine();
+System.out.print(web.crawler(url));
+	}
+}

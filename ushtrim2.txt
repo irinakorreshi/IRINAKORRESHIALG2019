@@ -1,0 +1,50 @@
+package ushtrim2DetyreKursi;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class WebCrawler {
+private static final int MAX_PAGES_TO_SEARCH=5;
+ArrayList<String>links=new ArrayList<>();
+ArrayList<String>allLinks=new ArrayList<>();
+public int crawler(String startingURL) {
+	int n=0;
+	allLinks.add(startingURL);
+	while(!allLinks.isEmpty()&& links.size()<=MAX_PAGES_TO_SEARCH) {
+		n++;
+		String urlString=allLinks.remove(0);
+		links.add(urlString);
+		System.out.println("link" + urlString);
+		for(String a:getURLs(urlString)) {
+			if(!links.contains(a)&& !allLinks.contains(a))
+				allLinks.add(a);
+		}
+	}
+	return n;
+}
+private ArrayList<String>getURLs(String url) {
+	// TODO Auto-generated method stub
+	ArrayList<String> links=new ArrayList<>();
+	try {
+		URL addressURL=new URL(url);
+		Scanner web=new Scanner(addressURL.openStream());
+		while(web.hasNext()) {
+			String next=web.next();
+			if(next.contains("href=\"http:\\")||next.contains("href=\"http://")) {
+				int start=next.indexOf("\"")+1;
+				int end=next.lastIndexOf("\"");
+				String a=next.substring(start, end);
+				if(!allLinks.contains(a)) {
+					links.add(a);
+				allLinks.add(a);
+			}
+		}
+    }
+}
+catch(Exception e) {
+	System.out.println("Error"+e.getMessage());
+}
+return links;
+}
+}

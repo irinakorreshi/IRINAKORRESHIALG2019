@@ -1,0 +1,135 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <time.h>
+using namespace std;
+
+typedef struct Liste 
+{	int cl;
+	string vlera;
+	struct Liste *pas;
+}Liste;
+
+int shum(string st)
+{	int s = 0;
+	for (int i=0; i<st.length();i++)
+	{  char c = st.at(i);
+	     s=s+(int)c;
+	}
+	return s;
+}
+
+char lowCap(char c) 
+{
+  int vl = (int)c;
+  if (vl>=65 && vl<=90)
+  	 vl=vl+32;
+  return (char) vl;
+}
+
+string lowCap2(string s)
+{	string f = "";
+	for (int i=0; i<f.length();i++)
+	{    f= f+lowCap(s.at(i)); 
+	}
+	return f;
+}
+
+int funcHash (int cl, int n)
+{     return cl%n;
+}
+
+void nullHash (Liste *B[],int n)
+{	for (int i=0; i<n; i++)
+	{ B[i]=NULL;
+	 }
+}
+
+Liste *krijo (int f, string vl)
+{	Liste *tmp = new Liste;
+	tmp->cl=funcHash(f,10);
+	tmp->vlera=vl;
+	tmp->pas=NULL;
+	return tmp;
+}
+
+Liste *shtoFillim (Liste *head,Liste *temp)
+{	temp->pas=head;
+	head=temp;
+	return head;
+}
+/*
+@param *B[] tabela HASH qe do te merret per kontroll
+@param poz tregon pozicion se ne cilen liste te tabeles HASH do te filloje kontrolli
+//poz = newNode -> cl % 10; nga 1 -10 
+@param w tregon fjalen qe do te kerkohet ne liste
+//w = newNode -> vl;
+*/
+
+Liste *ndodhet (Liste *B[],int poz, string str)
+{	Liste *tmp = B[poz];
+	while (tmp!=NULL)
+	{   if (tmp->vlera == str)
+	    {  return tmp;
+	     }
+	    tmp=tmp->pas;
+	}
+	return tmp;
+}
+//addInHASH (H,createNode(cl,vl))
+void shto(Liste *B[],Liste *tmp)
+{     	if (ndodhet(B,tmp->cl,tmp->vlera)==NULL)
+	{  B[tmp->cl]=shtoFillim(B[tmp->cl],tmp);
+	}
+	return;
+}
+
+void afisho(Liste *B[],int n)
+{	for (int i=0; i<n; i++)
+	{	Liste *tmp1 = B[i];
+		cout<<"Hash cl "<<i<<" :"<<endl;
+		cout<<endl;
+		while (tmp1!=NULL)
+		{	cout<<"\t"<<i<<" - "<<tmp1->vlera<<endl;
+			tmp1=tmp1->pas;
+		}
+		cout<<endl;
+	}
+}
+void hashFjalor (){
+	//Krijimi i tabeles HASH
+	int n = 10;
+	int nr= 10;
+	Liste *B [n];
+	nullHash(B,n);
+	
+	ifstream in;
+	in.open("cFile3.txt");
+	if (!in)
+	{  cout<<"File not found;"<<endl;
+	       return ;
+	}
+	else{
+		while (!in.eof())
+		{	string str;
+			in>>str;
+			str=lowCap2(str);			
+			shto(B,krijo(shum(str),str));
+		}
+	}
+	in.close();	
+	printHashTable(B,n);	
+}
+
+int main ()
+{   clock_t k, k1;
+    double koha;	
+    k = clock();
+    hashFjalor();
+		
+    k1 = clock();
+    koha = ((double) (k1 - k)) / CLOCKS_PER_SEC;
+    cout<<endl;
+    cout<<"Koha eshte: "<<koha*1000<<" milisekonda"<<endl;
+	return 0;
+}
